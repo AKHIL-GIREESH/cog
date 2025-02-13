@@ -12,7 +12,10 @@ const addThread = async (req,res) => {
 
 const editThread = async (req,res) => {
     try{
-        //const newThread = await ThreadSchema.findOneAndUpdate
+        const {name} = req.params
+        const {message} = req.body
+        const newThread = await ThreadSchema.findOneAndUpdate({name:name},{ $push: { comments: message } },{ new: true })
+        res.status(200).send(newThread)
     }catch(e){
         console.log(e)
         res.status(500).json({Status:"Something went wrong"})
