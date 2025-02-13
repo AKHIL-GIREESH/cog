@@ -13,8 +13,7 @@ const addThread = async (req,res) => {
 const editThread = async (req,res) => {
     try{
         const {name} = req.params
-        const {message} = req.body
-        const newThread = await ThreadSchema.findOneAndUpdate({name:name},{ $push: { comments: message } },{ new: true })
+        const newThread = await ThreadSchema.findOneAndUpdate({name:name},{ $push: { comments: req.body } },{ new: true })
         res.status(200).send(newThread)
     }catch(e){
         console.log(e)
