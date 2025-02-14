@@ -38,8 +38,12 @@ const Thread = () => {
                 </div>
 
             </div>
-            <div>
-                <input type='text'/>
+            <div style={{width:"100%",border:"1px solid",display:"flex",flexDirection:"column",alignItems:"flex-start"}}>
+                <div>
+                    <h2 style={{textAlign:"left"}}>DROP YOUR VIEWS</h2>
+                    <input type='text' placeholder='Type here' style={{padding:0,margin:0,width:"60vw",height:"5vh"}}/>
+                    <button style={{height:"6vh",margin:0,padding:0,width:"3vw",borderRadius:"0 5px 5px 0"}}>🚀</button>
+                </div>
                 {comments.map(item => <p>{item.text}</p>)}
             </div>
         </div>
