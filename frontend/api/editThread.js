@@ -1,4 +1,4 @@
-export const getThread = async (name,message) => {
+export const editThread = async (name,message) => {
     try {
         const resp = await fetch(`http://localhost:3000/api/v1/forum/${name}`, {
             method: "PATCH",

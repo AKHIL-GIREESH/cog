@@ -2,18 +2,31 @@ import React from 'react'
 import Loading from '../components/Loading';
 import Errorr from '../components/Error';
 import { getThread } from '../api/getThread';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery,useMutation } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+import Comment from '../components/Comment';
+import { editThread } from '../api/editThread';
 
 const Thread = () => {
     const { name } = useParams();
 
-    const {data,isLoading,isError} = useQuery({
+    const {data,isFetching,isError,refetch} = useQuery({
         queryKey:["allForums"],
         queryFn:() => getThread(name)
     })
 
-    if(isLoading){
+    const {mutate:addComment,isLoading} = useMutation({
+        mutationFn: async (param) => {
+                let addedComment = await editThread(name,param)
+                if(addedComment){
+                    refetch()
+                }
+                
+        }
+    })
+
+
+    if(isFetching){
         return <Loading/>
     }
 
@@ -21,11 +34,13 @@ const Thread = () => {
         return <Errorr/>
     }
 
+
+
     const {modification,downVotes,upVotes,comments} = data[0]
 
     return (
         <div style={{minHeight:"100vh", width:"80vw"}}>
-            <div style={{display:"flex",border:"1px solid", width:"80vw",justifyContent:"space-between"}}>
+            <div style={{display:"flex", width:"80vw",justifyContent:"space-between"}}>
                 <div>
                     <p style={{fontSize:"5rem",padding:0,margin:0,textTransform:"uppercase",fontWeight:800}}>{data[0].name}</p>
                     <div style={{display:"flex",gap:"50px"}}>
@@ -38,13 +53,9 @@ const Thread = () => {
                 </div>
 
             </div>
-            <div style={{width:"100%",border:"1px solid",display:"flex",flexDirection:"column",alignItems:"flex-start"}}>
-                <div>
-                    <h2 style={{textAlign:"left"}}>DROP YOUR VIEWS</h2>
-                    <input type='text' placeholder='Type here' style={{padding:0,margin:0,width:"60vw",height:"5vh"}}/>
-                    <button style={{height:"6vh",margin:0,padding:0,width:"3vw",borderRadius:"0 5px 5px 0"}}>🚀</button>
-                </div>
-                {comments.map(item => <p>{item.text}</p>)}
+            <div style={{width:"100%",display:"flex",flexDirection:"column",alignItems:"flex-start"}}>
+                <Comment addComment={addComment}/>
+                {comments.map(item => <p>{item.user} : {item.text}</p>)}
             </div>
         </div>
     )
